@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>SView企业版 · 滑动引导</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: #f2f7ff;
+            color: #142b44;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .guide-card {
+            max-width: 420px;
+            width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 36px;
+            box-shadow: 0 20px 40px -12px rgba(0, 35, 75, 0.25);
+            overflow: hidden;
+            border: 1px solid rgba(42, 109, 244, 0.15);
+        }
+
+        /* 头部 */
+        .header {
+            padding: 24px 20px 12px;
+            background: linear-gradient(135deg, #f9fcff 0%, #e7f0fe 100%);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 0.7rem;
+            padding: 4px 14px;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+            margin-bottom: 12px;
+            box-shadow: 0 3px 0 #0e2340;
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(145deg, #0b2b4e, #1a4972);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 6px;
+        }
+
+        .header-sub {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #2e4e74;
+            font-weight: 500;
+            font-size: 0.85rem;
+            margin-top: 6px;
+        }
+
+        .skip-link {
+            color: #2a6df4;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 0;
+            background: transparent;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* 滑动区域 */
+        .slider-wrapper {
+            position: relative;
+            padding: 0 0 4px 0;
+        }
+
+        .slides-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            padding: 4px 0 12px;
+        }
+
+        .slides-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .slide {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+            padding: 8px 20px 12px;
+        }
+
+        .step-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .step-icon {
+            width: 44px;
+            height: 44px;
+            background: #0d2e4e;
+            color: white;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.4rem;
+            box-shadow: 0 5px 0 #091a2c;
+        }
+
+        .step-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0c2f50;
+        }
+
+        .time-chip {
+            margin-left: auto;
+            background: #d4e2fc;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e4d7a;
+            white-space: nowrap;
+        }
+
+        .instruction-box {
+            background: #f4faff;
+            border-radius: 20px;
+            padding: 16px 16px;
+            border-left: 5px solid #2a6df4;
+            margin: 14px 0 12px;
+            box-shadow: inset 0 1px 2px #fff, 0 4px 6px -4px rgba(0,0,0,0.05);
+        }
+
+        .code-snip {
+            background: #e3edfe;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            border: 1px solid #acc9f1;
+            word-break: break-all;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 12px;
+        }
+
+        .feature-list li {
+            padding-left: 26px;
+            position: relative;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .feature-list li::before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+            color: #2a6df4;
+            font-weight: bold;
+        }
+
+        .format-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 12px 0 4px;
+        }
+
+        .format-badge {
+            background: white;
+            border: 1px solid #b4d0ff;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            color: #1c4c8c;
+        }
+
+        .tip-highlight {
+            background: #e2f0e6;
+            border-radius: 16px;
+            padding: 12px 14px;
+            border: 1px solid #a8d0b5;
+            color: #194d2e;
+            font-size: 0.85rem;
+            margin-top: 16px;
+        }
+
+        /* 分页点 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 6px 0 12px;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 20px;
+            background: #c0d4f0;
+            transition: all 0.2s;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            width: 24px;
+            background: #1f5eb6;
+            box-shadow: 0 2px 6px #2a6df470;
+        }
+
+        /* 底部操作栏 */
+        .action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 20px 24px;
+            background: white;
+            border-top: 1px solid #e1ebfa;
+        }
+
+        .nav-btn {
+            background: white;
+            border: 1.5px solid #c9ddfc;
+            color: #1e4d8c;
+            font-weight: 600;
+            padding: 12px 18px;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #d2e0f5;
+            transition: all 0.1s;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .nav-btn.primary {
+            background: #1f5eb6;
+            border-color: #0e3c72;
+            color: white;
+            box-shadow: 0 5px 0 #0e2a48;
+        }
+
+        .nav-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #b0c9ec;
+        }
+
+        .nav-btn.primary:active {
+            box-shadow: 0 2px 0 #0b1f33;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            transform: none;
+            box-shadow: 0 3px 0 #d2e0f5;
+            pointer-events: none;
+        }
+
+        /* CTA底部 */
+        .cta-footer {
+            background: linear-gradient(145deg, #13294b, #1b3d61);
+            color: white;
+            padding: 24px 20px 28px;
+            border-radius: 32px 32px 0 0;
+            margin-top: 4px;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 16px 0 16px;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: #b1cdf5;
+            font-size: 1rem;
+        }
+
+        .new-price {
+            background: #ffd966;
+            color: #1f3a5f;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: 800;
+            font-size: 1.8rem;
+            box-shadow: 0 5px 0 #a87c2a;
+        }
+
+        .btn-light {
+            background: white;
+            color: #142b44;
+            padding: 16px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 7px 0 #b0c7e0;
+            width: 100%;
+            border: none;
+            font-size: 1.1rem;
+            margin-top: 8px;
+        }
+
+        .btn-light:active {
+            transform: translateY(4px);
+            box-shadow: 0 3px 0 #9bb3d0;
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #6f8db0;
+            font-size: 0.7rem;
+            padding: 12px 20px 16px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* 移动端微调 */
+        @media (max-width: 380px) {
+            .step-title { font-size: 1.2rem; }
+            .step-icon { width: 40px; height: 40px; font-size: 1.2rem; }
+            .nav-btn { padding: 10px 12px; min-width: 85px; }
+            .header h2 { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="guide-card" id="app">
+    <!-- 头部 -->
+    <div class="header">
+        <span class="badge">✨ 3人起购 · 自由增减</span>
+        <h2>SView企业版<br>三步上手·团队协同</h2>
+        <div class="header-sub">
+            <span>📋 设计→工艺→生产全周期</span>
+            <button class="skip-link" id="skipBtn">跳过教程 ⤵</button>
+        </div>
+    </div>
+
+    <!-- 滑动区域 -->
+    <div class="slider-wrapper">
+        <div class="slides-container" id="slidesContainer">
+            <!-- 第1页 -->
+            <div class="slide" data-index="0">
+                <div class="step-badge">
+                    <div class="step-icon">1</div>
+                    <div class="step-title">开通企业账号</div>
+                    <div class="time-chip">⏱️ 2分钟</div>
+                </div>
+                <div class="instruction-box">
+                    <p style="margin-bottom: 8px;">🌐 <strong>访问官网申请SaaS试用</strong></p>
+                    <p><span class="code-snip">sview3d.com/enterpriseProduct</span></p>
+                    <p style="margin-top: 10px;">点击【SaaS试用】→ 填写信息 → 提交</p>
+                </div>
+                <ul class="feature-list">
+                    <li>立即获得企业空间+个人账号</li>
+                    <li>纯云端，无需部署，支持私有化</li>
+                    <li>客服 0531-8887 9090 快速开通</li>
+                </ul>
+                <div class="tip-highlight">
+                    ✅ 完成即成为企业管理员，可邀请成员。
+                </div>
+            </div>
+            <!-- 第2页 -->
+            <div class="slide" data-index="1">
+                <div class="step-badge">
+                    <div class="step-icon">2</div>
+                    <div class="step-title">邀请团队成员</div>
+                    <div class="time-chip">⏱️ 3分钟</div>
+                </div>
+                <div class="instruction-box">
+                    <p>👥 登录企业账号 → 【成员管理】</p>
+                    <p style="margin-top: 6px;">➕ 添加成员 (手机/姓名/角色)</p>
+                    <p>📎 批量导入：下载Excel上传</p>
+                </div>
+                <ul class="feature-list">
+                    <li>可设子管理员协助</li>
+                    <li>授权成员“创建项目”</li>
+                    <li>成员手机号登录即入企业空间</li>
+                </ul>
+                <div class="tip-highlight">
+                    🔐 后续可单独设置项目访问权限。
+                </div>
+            </div>
+            <!-- 第3页 -->
+            <div class="slide" data-index="2">
+                <div class="step-badge">
+                    <div class="step-icon">3</div>
+                    <div class="step-title">创建项目·上传模型</div>
+                    <div class="time-chip">⏱️ 5分钟</div>
+                </div>
+                <div class="instruction-box">
+                    <p>📁 企业空间 → 【新建项目空间】</p>
+                    <p>📤 上传文件/文件夹 (35+格式)</p>
+                    <p>💡 装配体.zip自动解压</p>
+                </div>
+                <div class="format-grid">
+                    <span class="format-badge">SolidWorks</span>
+                    <span class="format-badge">Creo</span>
+                    <span class="format-badge">CATIA</span>
+                    <span class="format-badge">UG NX</span>
+                    <span class="format-badge">STEP</span>
+                    <span class="format-badge">DWG</span>
+                    <span class="format-badge">Revit</span>
+                </div>
+                <ul class="feature-list">
+                    <li>G级装配秒开，干涉检查流畅</li>
+                    <li>在线预览PDF/图片/Office/视频</li>
+                </ul>
+            </div>
+            <!-- 第4页 -->
+            <div class="slide" data-index="3">
+                <div class="step-badge">
+                    <div class="step-icon">4</div>
+                    <div class="step-title">权限·安全传阅</div>
+                    <div class="time-chip">⏱️ 2分钟</div>
+                </div>
+                <div class="instruction-box">
+                    <p>🔐 项目内【成员管理】→ 设置权限</p>
+                    <p>👁️ 查看/下载/上传/分享 分别控制</p>
+                </div>
+                <ul class="feature-list">
+                    <li>项目数据隔离，并行不干扰</li>
+                    <li>图纸不外泄，外协安全协作</li>
+                    <li>手机/平板/电脑随时看图</li>
+                </ul>
+                <div class="tip-highlight">
+                    📱 成员登录后即可在“企业空间”查看项目。
+                </div>
+            </div>
+            <!-- 第5页 -->
+            <div class="slide" data-index="4">
+                <div class="step-badge">
+                    <div class="step-icon">5</div>
+                    <div class="step-title">多端同步看图</div>
+                    <div class="time-chip">📲 可选</div>
+                </div>
+                <div class="instruction-box">
+                    <p>📱 应用商店搜“SView看图纸”</p>
+                    <p>💻 电脑端下载：sview3d.com/download</p>
+                    <p>🔄 同手机号登录，数据实时同步</p>
+                </div>
+                <ul class="feature-list">
+                    <li>电脑/平板/手机/小程序全端通用</li>
+                    <li>轻量化引擎，看图更流畅</li>
+                    <li>离线缓存支持</li>
+                </ul>
+            </div>
+        </div>
+        <!-- 分页点 -->
+        <div class="pagination" id="paginationDots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+    </div>
+
+    <!-- 底部操作栏（上一步/下一步） -->
+    <div class="action-bar" id="actionBar">
+        <button class="nav-btn" id="prevBtn" disabled>← 上一步</button>
+        <button class="nav-btn primary" id="nextBtn">下一步 →</button>
+    </div>
+
+    <!-- 最终转化卡片 (滑动到最后一页后展示) -->
+    <div id="finalCTA" class="cta-footer hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="color: white; font-size: 1.4rem;">🚀 升级企业版</h3>
+            <span style="background: #2b5580; padding: 4px 14px; border-radius: 30px; font-size:0.8rem;">👥 3人起购</span>
+        </div>
+        <p style="color: #bbd6ff; margin: 8px 0 0; font-size:0.9rem;">一个平台打通设计·工艺·干涉检查·传阅全周期</p>
+        <div class="price-row">
+            <span class="old-price">原价¥365/席/年</span>
+            <span class="new-price">¥288/席/年</span>
+            <span style="color: #ffdb7e; font-size:0.9rem;">限时优惠</span>
+        </div>
+        <ul style="color: #e0edff; margin: 20px 0; list-style: none; font-size:0.9rem;">
+            <li style="margin-bottom: 8px;">🔍 干涉检查 · G级装配不卡顿</li>
+            <li style="margin-bottom: 8px;">📐 快速出工程图 · 三维标注联动</li>
+            <li style="margin-bottom: 8px;">🔒 精细化权限 · 项目隔离</li>
+        </ul>
+        <a href="#" class="btn-light">立即升级 · 锁定优惠</a>
+        <p style="text-align: center; margin-top: 16px; opacity: 0.8; font-size:0.8rem;">📞 0531-8887 9090  |  全端通用</p>
+    </div>
+
+    <div class="footer-note">
+        *试用数据保留，续费即恢复。自由增减席位，按需付费。
+    </div>
+</div>
+
+<script>
+    (function(){
+        const slidesContainer = document.getElementById('slidesContainer');
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        const dots = document.querySelectorAll('.dot');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const skipBtn = document.getElementById('skipBtn');
+        const actionBar = document.getElementById('actionBar');
+        const finalCTA = document.getElementById('finalCTA');
+        const totalSlides = slides.length;
+
+        let currentIndex = 0;
+
+        function updateDots(index) {
+            dots.forEach((dot, i) => {
+                if (i === index) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+        }
+
+        function scrollToSlide(index) {
+            if (index < 0) index = 0;
+            if (index >= totalSlides) index = totalSlides - 1;
+            const slide = slides[index];
+            if (slide) {
+                slidesContainer.scrollTo({
+                    left: slide.offsetLeft,
+                    behavior: 'smooth'
+                });
+                currentIndex = index;
+                updateDots(index);
+                updateUI(index);
+            }
+        }
+
+        function updateUI(index) {
+            // 上一步按钮
+            prevBtn.disabled = (index === 0);
+            
+            const isLast = (index === totalSlides - 1);
+            if (isLast) {
+                actionBar.classList.add('hidden');
+                finalCTA.classList.remove('hidden');
+                nextBtn.textContent = '完成 ✓';
+            } else {
+                actionBar.classList.remove('hidden');
+                finalCTA.classList.add('hidden');
+                nextBtn.textContent = '下一步 →';
+            }
+        }
+
+        function handleScrollEnd() {
+            const scrollLeft = slidesContainer.scrollLeft;
+            const slideWidth = slidesContainer.clientWidth;
+            let newIndex = Math.round(scrollLeft / slideWidth);
+            if (newIndex < 0) newIndex = 0;
+            if (newIndex >= totalSlides) newIndex = totalSlides - 1;
+            
+            if (newIndex !== currentIndex) {
+                currentIndex = newIndex;
+                updateDots(currentIndex);
+                updateUI(currentIndex);
+            } else {
+                updateUI(currentIndex);
+            }
+        }
+
+        let scrollTimeout;
+        slidesContainer.addEventListener('scroll', () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(handleScrollEnd, 80);
+        });
+
+        dots.forEach((dot, idx) => {
+            dot.addEventListener('click', () => scrollToSlide(idx));
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) scrollToSlide(currentIndex - 1);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentIndex < totalSlides - 1) {
+                scrollToSlide(currentIndex + 1);
+            } else {
+                actionBar.classList.add('hidden');
+                finalCTA.classList.remove('hidden');
+            }
+        });
+
+        skipBtn.addEventListener('click', () => {
+            scrollToSlide(totalSlides - 1);
+        });
+
+        function init() {
+            slidesContainer.scrollLeft = 0;
+            currentIndex = 0;
+            updateDots(0);
+            updateUI(0);
+        }
+
+        init();
+
+        window.addEventListener('resize', () => {
+            const slide = slides[currentIndex];
+            if (slide) {
+                slidesContainer.scrollTo({ left: slide.offsetLeft, behavior: 'auto' });
+            }
+            updateUI(currentIndex);
+        });
+    })();
+</script>
+</body>
+</html>
